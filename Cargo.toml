@@ -17,8 +17,15 @@ A library to acquire a stack trace (backtrace) at runtime in a no-std Rust progr
 
 [dependencies]
 cfg-if = "0.1"
-x86 = "0.47"
+
 log = "0.4"
 stable_deref_trait = { version = "1.1.0", default-features = false, features = ["alloc"] }
 gimli = { version = "0.25", default-features = false, features = ["read", "endian-reader", "stable_deref_trait"] }
 addr2line = { version = "0.16", default-features = false, features = ["rustc-demangle"] }
+
+
+[target.'cfg(target_arch = "x86_64")'.dependencies]
+x86 = { version = "0.51" }
+
+[target.'cfg(target_arch = "aarch64")'.dependencies]
+armv8 = { git = "https://github.com/achreto/rust-armv8" }

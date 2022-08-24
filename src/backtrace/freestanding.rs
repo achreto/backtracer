@@ -50,9 +50,19 @@ pub fn trace_from(mut curframe: Frame, cb: &mut dyn FnMut(&super::Frame) -> bool
     }
 }
 
+
+#[cfg(target_arch = "x86_64")]
 #[inline(always)]
 pub fn trace(cb: &mut dyn FnMut(&super::Frame) -> bool) {
     use x86::current::registers;
     let curframe = Frame::new(registers::rbp(), registers::rsp(), registers::rip());
     trace_from(curframe.clone(), cb);
 }
+
+
+#[cfg(target_arch = "aarch64")]
+pub fn trace(_cb: &mut dyn FnMut(&super::Frame) -> bool) {
+    panic!("NYI!");
+}
+
+
