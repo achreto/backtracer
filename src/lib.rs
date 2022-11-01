@@ -1,5 +1,6 @@
 //! A library for acquiring a backtrace at runtime
 #![no_std]
+#![feature(link_llvm_intrinsics)]
 
 extern crate addr2line;
 extern crate alloc;

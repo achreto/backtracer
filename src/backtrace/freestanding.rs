@@ -1,3 +1,12 @@
+
+extern {
+    #[link_name = "llvm.returnaddress"]
+    fn return_address(a: i32) -> *const u8;
+
+    #[link_name = "llvm.frameaddress"]
+    fn frame_address(a: i32) -> *const u8;
+}
+
 #[derive(Debug, Clone)]
 pub struct Frame {
     rbp: u64,
@@ -55,14 +64,23 @@ pub fn trace_from(mut curframe: Frame, cb: &mut dyn FnMut(&super::Frame) -> bool
 #[inline(always)]
 pub fn trace(cb: &mut dyn FnMut(&super::Frame) -> bool) {
     use x86::current::registers;
-    let curframe = Frame::new(registers::rbp(), registers::rsp(), registers::rip());
+
+    let pc = unsafe { return_address(1) as u64 };
+    let fp = unsafe {frame_address(0) as u64 };
+
+    let curframe = Frame::new(fp, registers::rsp(), pc);
     trace_from(curframe.clone(), cb);
 }
 
 
 #[cfg(target_arch = "aarch64")]
-pub fn trace(_cb: &mut dyn FnMut(&super::Frame) -> bool) {
-    panic!("NYI!");
-}
+pub fn trace(cb: &mut dyn FnMut(&super::Frame) -> bool) {
+    use armv8::aarch64::cpu;
 
+    let pc = unsafe { return_address(1) as u64 };
+    let fp = unsafe {frame_address(0) as u64 };
+
+    let curframe = Frame::new(fp, cpu::sp(), pc);
+    trace_from(curframe.clone(), cb);
+}
 
