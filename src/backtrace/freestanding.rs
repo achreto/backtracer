@@ -24,7 +24,12 @@ impl Frame {
     }
 
     pub fn ip(&self) -> *mut u8 {
-        (self.rip - 1) as *mut u8
+        if self.rip == 0 {
+            0 as *mut u8
+        } else {
+            (self.rip - 1) as *mut u8
+        }
+
     }
 
     pub fn symbol_address(&self) -> *mut u8 {
