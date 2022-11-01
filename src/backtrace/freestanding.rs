@@ -70,8 +70,8 @@ pub fn trace_from(mut curframe: Frame, cb: &mut dyn FnMut(&super::Frame) -> bool
 pub fn trace(cb: &mut dyn FnMut(&super::Frame) -> bool) {
     use x86::current::registers;
 
-    let pc = unsafe { return_address(1) as u64 };
-    let fp = unsafe {frame_address(0) as u64 };
+    let pc = unsafe { return_address(0) as u64 };
+    let fp = unsafe {frame_address(1) as u64 };
 
     let curframe = Frame::new(fp, registers::rsp(), pc);
     trace_from(curframe.clone(), cb);
@@ -82,8 +82,8 @@ pub fn trace(cb: &mut dyn FnMut(&super::Frame) -> bool) {
 pub fn trace(cb: &mut dyn FnMut(&super::Frame) -> bool) {
     use armv8::aarch64::cpu;
 
-    let pc = unsafe { return_address(1) as u64 };
-    let fp = unsafe {frame_address(0) as u64 };
+    let pc = unsafe { return_address(0) as u64 };
+    let fp = unsafe {frame_address(1) as u64 };
 
     let curframe = Frame::new(fp, cpu::sp(), pc);
     trace_from(curframe.clone(), cb);

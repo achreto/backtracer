@@ -12,6 +12,8 @@ pub fn resolve(
     addr: *mut u8,
     cb: &mut dyn FnMut(&super::Symbol),
 ) -> Result<(), addr2line::gimli::read::Error> {
+    assert!(addr as u64 == 0 || addr as u64 >= offset);
+
     let addr = (addr as u64 - offset) as usize;
 
     // Try to resolve an address within a context:
