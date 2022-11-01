@@ -12,7 +12,9 @@ pub fn resolve(
     addr: *mut u8,
     cb: &mut dyn FnMut(&super::Symbol),
 ) -> Result<(), addr2line::gimli::read::Error> {
-    assert!(addr as u64 == 0 || addr as u64 >= offset);
+    if (addr as u64) < offset {
+        return Ok(());
+    }
 
     let addr = (addr as u64 - offset) as usize;
 
